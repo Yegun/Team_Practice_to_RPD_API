@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(uv init *)",
+      "Bash(uv add *)",
+      "Bash(npm create *)",
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "Bash(echo \"build exit=$?\")",
+      "PowerShell(foreach \\($p in 8000,5173\\) { Get-NetTCPConnection -LocalPort $p -State Listen -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue } }; Start-Sleep 2; \"listening now:\"; Get-NetTCPConnection -LocalPort 8000,5173 -State Listen -ErrorAction SilentlyContinue | Measure-Object | Select-Object -ExpandProperty Count; cd C:\\\\mzc\\\\vibe-coding\\\\task-flow1; git status --short; \"--- ignored check\"; git status --short --ignored | Select-String 'node_modules|dist|\\\\.venv|__pycache__'; \"--- versions\"; Push-Location backend; uv run python --version; uv pip list 2>$null | Select-String '^\\(fastapi|uvicorn|pytest|pydantic|starlette|python-multipart\\) '; Pop-Location; Push-Location frontend; npm ls --depth=0 2>&1; Pop-Location)",
+      "PowerShell(Get-NetTCPConnection -LocalPort 8000,5173 -State Listen -ErrorAction SilentlyContinue | ForEach-Object { \"$\\($_.LocalPort\\) pid=$\\($_.OwningProcess\\) $\\(\\(Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue\\).ProcessName\\)\" }; Get-ChildItem C:\\\\mzc\\\\vibe-coding\\\\task-flow1\\\\.claude -Recurse -File | Select-Object -First 5 FullName)",
+      "PowerShell(Stop-Process -Id 19452 -Force -ErrorAction SilentlyContinue; Start-Sleep 2; $c = Get-NetTCPConnection -LocalPort 8000,5173 -State Listen -ErrorAction SilentlyContinue; if \\($c\\) { $c | Select-Object LocalPort,OwningProcess } else { \"no listeners\" }; Get-CimInstance Win32_Process | Where-Object { $_.CommandLine -match 'fastapi|vite' -and $_.CommandLine -match 'task-flow1' } | Select-Object ProcessId, Name)",
+      "PowerShell(Get-Process -Id 19452 -ErrorAction SilentlyContinue | Select-Object Id,ProcessName; \"---\"; Get-CimInstance Win32_Process | Where-Object { $_.Name -match 'python|uv|node' } | Select-Object ProcessId,Name,@{n='cmd';e={\\($_.CommandLine -replace '\\\\s+',' '\\).Substring\\(0,[Math]::Min\\(120,$_.CommandLine.Length\\)\\)}}; \"---\"; try { \\(Invoke-WebRequest http://127.0.0.1:8000/api/health -TimeoutSec 3\\).StatusCode } catch { \"no response: $\\($_.Exception.Message\\)\" })",
+      "PowerShell(Stop-Process -Id 5520 -Force; Start-Sleep 2; try { \\(Invoke-WebRequest http://127.0.0.1:8000/api/health -TimeoutSec 3\\).StatusCode } catch { \"api stopped\" }; try { \\(Invoke-WebRequest http://localhost:5173/ -TimeoutSec 3\\).StatusCode } catch { \"web stopped\" })"
+    ]
+  }
+}
