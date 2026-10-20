@@ -11,8 +11,8 @@
 |----|------|------|
 | F-01 | 웹 앱이며 주로 휴대폰 브라우저에서 쓴다. | PRODUCT-DIRECTION |
 | F-02 | 사진을 읽고 식품을 정리하는 데 AI 를 쓴다. | PRODUCT-DIRECTION |
-| F-03 | 데이터는 클라우드 DB 에 저장한다. | PRODUCT-DIRECTION |
-| F-04 | Vercel 로 배포하고, 배포된 주소에서 시연한다. | PRODUCT-DIRECTION |
+| F-03 | 데이터는 SQLite 에 저장한다. (클라우드 DB 에서 변경) | PRODUCT-DIRECTION, 사용자 변경 (D-019) |
+| F-04 | Vercel 로 배포하고, 배포된 주소에서 시연한다. (이번 범위에서는 보류, D-021) | PRODUCT-DIRECTION |
 | F-05 | 개발 기간은 40 시간이다. (기획·설계 8, 구현 22, 배포 6, 고도화 4) | PRODUCT-DIRECTION |
 | F-06 | 네이티브 앱과 결제는 만들지 않는다. | PRODUCT-DIRECTION |
 | F-07 | 식품을 하나씩 입력하지 않아도 되게 하는 것이 목표다. | PRODUCT-DIRECTION |
