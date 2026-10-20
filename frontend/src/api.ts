@@ -49,6 +49,24 @@ export function listCards(): Promise<{ items: Card[] }> {
   return request('/api/cards')
 }
 
+export function createCards(items: Draft[]): Promise<{ items: Card[] }> {
+  return request('/api/cards', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ items }),
+  })
+}
+
+export type CardPatch = Partial<Pick<Card, 'name' | 'quantity' | 'due_date' | 'storage' | 'is_risky'>>
+
+export function updateCard(id: string, patch: CardPatch): Promise<Card> {
+  return request(`/api/cards/${encodeURIComponent(id)}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(patch),
+  })
+}
+
 export function analyzeReceipt(image: File): Promise<{ items: Draft[] }> {
   const form = new FormData()
   form.append('image', image)

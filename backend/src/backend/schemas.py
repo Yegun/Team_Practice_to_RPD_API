@@ -41,6 +41,23 @@ class CardIn(BaseModel):
     _due_date = field_validator("due_date")(check_due_date)
 
 
+class CardPatch(BaseModel):
+    """카드 수정 요청. 바꿀 필드만 담는다 (D-012). status 는 정리 API(US-08)가 쓴다."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    # 보내지 않은 필드는 건드리지 않는다. 보냈다면 CardIn 과 같은 규칙을 지켜야 한다.
+    # due_date 만 null 을 보낼 수 있다 (기한 비우기).
+    name: str = Field(default=None)
+    quantity: StrictInt = Field(default=None, ge=1)
+    due_date: str | None = None
+    storage: Storage = Field(default=None)
+    is_risky: StrictBool = Field(default=None)
+
+    _name = field_validator("name")(check_name)
+    _due_date = field_validator("due_date")(check_due_date)
+
+
 class CardsCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 

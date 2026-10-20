@@ -3,7 +3,7 @@ import { strings } from '../strings'
 import type { Card } from '../types'
 
 // 색에만 의존하지 않도록 남은 일수 글자를 항상 함께 보여 준다 (D-013).
-export function CardItem({ card }: { card: Card }) {
+export function CardItem({ card, onEdit }: { card: Card; onEdit: (card: Card) => void }) {
   return (
     <li className={`card card-${card.urgency}${card.is_risky ? ' card-risky' : ''}`}>
       <div className="card-main">
@@ -19,6 +19,11 @@ export function CardItem({ card }: { card: Card }) {
         {card.due_date && <span className="card-date">{card.due_date}</span>}
         {card.urgency === 'expired' && <span className="card-flag">{strings.expired}</span>}
         {card.urgency === 'urgent' && <span className="card-flag">{strings.urgent}</span>}
+      </div>
+      <div className="card-actions">
+        <button type="button" onClick={() => onEdit(card)}>
+          {strings.edit}
+        </button>
       </div>
     </li>
   )

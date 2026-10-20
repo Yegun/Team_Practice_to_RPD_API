@@ -81,3 +81,29 @@ def insert_cards(
     ).fetchall()
     by_id = {r["id"]: r for r in rows}
     return [by_id[i] for i in ids]
+
+
+def get_card(conn: sqlite3.Connection, owner: str, card_id: str) -> sqlite3.Row | None:
+    return conn.execute(
+        "SELECT * FROM cards WHERE id = ? AND owner_id = ?", (card_id, owner)
+    ).fetchone()
+
+
+_EDITABLE = {"name", "quantity", "due_date", "storage", "is_risky"}
+
+
+def update_card(
+    conn: sqlite3.Connection, owner: str, card_id: str, changes: dict
+) -> sqlite3.Row:
+    """바뀐 필드만 반영하고 updated_at 을 갱신한다."""
+    assert changes and set(changes) <= _EDITABLE
+    values = {k: (int(v) if k == "is_risky" else v) for k, v in changes.items()}
+    sets = ", ".join(f"{k} = ?" for k in values) + ", updated_at = ?"
+    with conn:
+        conn.execute(
+            f"UPDATE cards SET {sets} WHERE id = ? AND owner_id = ?",
+            (*values.values(), _now(), card_id, owner),
+        )
+    row = get_card(conn, owner, card_id)
+    assert row is not None
+    return row

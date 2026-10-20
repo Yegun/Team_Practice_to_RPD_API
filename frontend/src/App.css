@@ -140,6 +140,62 @@ button:disabled {
   font-weight: 700;
 }
 
+.field {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.field > span:first-child {
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.field input[type='text'],
+.field input[type='number'],
+.field input[type='date'],
+.field select {
+  font: inherit;
+  min-height: 44px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid #c4c9d4;
+  width: 100%;
+}
+
+.field-invalid input,
+.field-invalid select {
+  border-color: #c0392b;
+  background: #fdf1f1;
+}
+
+.field-error {
+  color: #c0392b;
+  font-size: 0.8125rem;
+}
+
+.field-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.field-check input {
+  width: 22px;
+  height: 22px;
+}
+
+.card-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.card-actions button {
+  min-height: 36px;
+  padding: 0 12px;
+  font-size: 0.875rem;
+}
+
 .card-due {
   display: flex;
   align-items: center;
