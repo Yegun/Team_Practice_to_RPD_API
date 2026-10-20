@@ -2,9 +2,13 @@ import { useEffect, useState } from 'react'
 import './App.css'
 import { listCards } from './api'
 import { CardList, type ListState } from './components/CardList'
+import { UploadForm } from './components/UploadForm'
 import { strings } from './strings'
 
+type View = 'list' | 'upload'
+
 export default function App() {
+  const [view, setView] = useState<View>('list')
   const [list, setList] = useState<ListState>({ kind: 'loading' })
   const [attempt, setAttempt] = useState(0)
 
@@ -22,7 +26,7 @@ export default function App() {
     }
   }, [attempt])
 
-  const retry = () => {
+  const reload = () => {
     setList({ kind: 'loading' })
     setAttempt((n) => n + 1)
   }
@@ -30,7 +34,24 @@ export default function App() {
   return (
     <main className="app">
       <h1>{strings.appTitle}</h1>
-      <CardList state={list} onRetry={retry} />
+      {view === 'upload' ? (
+        <UploadForm
+          onDone={() => {
+            // 정리 결과 확인 화면은 US-03 에서 붙인다.
+            setView('list')
+          }}
+          onCancel={() => setView('list')}
+        />
+      ) : (
+        <>
+          <div className="actions">
+            <button type="button" className="primary" onClick={() => setView('upload')}>
+              {strings.addPhoto}
+            </button>
+          </div>
+          <CardList state={list} onRetry={reload} />
+        </>
+      )}
     </main>
   )
 }

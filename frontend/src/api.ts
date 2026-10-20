@@ -1,5 +1,5 @@
 import { getOwnerId } from './ownerId'
-import type { Card } from './types'
+import type { Card, Draft } from './types'
 
 export class ApiRequestError extends Error {
   status: number
@@ -47,4 +47,10 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
 
 export function listCards(): Promise<{ items: Card[] }> {
   return request('/api/cards')
+}
+
+export function analyzeReceipt(image: File): Promise<{ items: Draft[] }> {
+  const form = new FormData()
+  form.append('image', image)
+  return request('/api/receipts/analyze', { method: 'POST', body: form })
 }

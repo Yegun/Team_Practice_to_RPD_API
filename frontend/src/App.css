@@ -9,6 +9,55 @@
   margin: 0 0 16px;
 }
 
+.actions {
+  display: flex;
+  gap: 8px;
+  margin: 0 0 16px;
+}
+
+.actions .primary,
+button.primary {
+  background: #2457d6;
+  border-color: #2457d6;
+  color: #fff;
+}
+
+button:disabled {
+  opacity: 0.5;
+}
+
+.panel {
+  padding: 16px;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid #e1e4ea;
+}
+
+.panel h2 {
+  font-size: 1.0625rem;
+  margin: 0 0 8px;
+}
+
+.file-label {
+  display: block;
+}
+
+.file-label span {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.file-label input {
+  width: 100%;
+  font: inherit;
+}
+
+.file-name {
+  color: #5a6172;
+  word-break: break-all;
+}
+
 .notice {
   padding: 16px;
   border-radius: 8px;

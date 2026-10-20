@@ -10,6 +10,22 @@ export const strings = {
   expired: '기한 지남',
   urgent: '임박',
   risky: '주의 식품',
+  addPhoto: '사진 올리기',
+  back: '돌아가기',
+  uploadTitle: '영수증 사진 올리기',
+  uploadHelp: '영수증 사진을 올리면 AI 가 산 식품을 정리해 줍니다.',
+  chooseFile: '사진 선택',
+  analyze: '정리하기',
+  analyzing: '사진을 정리하는 중...',
+  // 사진 정리 실패 (T-08). 문구는 임시다.
+  uploadErrors: {
+    badType: 'jpeg, png, webp 사진만 올릴 수 있습니다. 다른 사진을 골라 주세요.',
+    tooLarge: '사진은 10MB 이하여야 합니다. 다른 사진을 골라 주세요.',
+    network: '사진을 보내지 못했습니다. 연결을 확인하고 다시 시도해 주세요.',
+    aiFailed: '정리에 실패했습니다. 다시 시도해 주세요.',
+    noFood: '식품을 찾지 못했습니다. 다른 사진을 올려 주세요.',
+    other: '문제가 생겼습니다. 다시 시도해 주세요.',
+  },
   storage: {
     fridge: '냉장',
     freezer: '냉동',
