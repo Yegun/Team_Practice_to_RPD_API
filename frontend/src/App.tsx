@@ -1,35 +1,36 @@
 import { useEffect, useState } from 'react'
 import './App.css'
+import { listCards } from './api'
+import { CardList, type ListState } from './components/CardList'
+import { strings } from './strings'
 
-type HealthState = 'loading' | 'ok' | 'error'
-
-function App() {
-  const [health, setHealth] = useState<HealthState>('loading')
+export default function App() {
+  const [list, setList] = useState<ListState>({ kind: 'loading' })
+  const [attempt, setAttempt] = useState(0)
 
   useEffect(() => {
-    const controller = new AbortController()
-    fetch('/api/health', { signal: controller.signal })
-      .then((response) => (response.ok ? response.json() : Promise.reject()))
-      .then((body: { status: string }) =>
-        setHealth(body.status === 'ok' ? 'ok' : 'error'),
-      )
-      .catch(() => {
-        if (!controller.signal.aborted) setHealth('error')
+    let cancelled = false
+    listCards()
+      .then(({ items }) => {
+        if (!cancelled) setList({ kind: 'ready', items })
       })
-    return () => controller.abort()
-  }, [])
+      .catch(() => {
+        if (!cancelled) setList({ kind: 'error' })
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [attempt])
+
+  const retry = () => {
+    setList({ kind: 'loading' })
+    setAttempt((n) => n + 1)
+  }
 
   return (
     <main className="app">
-      <h1>Task Flow</h1>
-      <p>
-        API 연결:{' '}
-        {health === 'loading' && '확인 중…'}
-        {health === 'ok' && '정상'}
-        {health === 'error' && '연결하지 못했습니다'}
-      </p>
+      <h1>{strings.appTitle}</h1>
+      <CardList state={list} onRetry={retry} />
     </main>
   )
 }
-
-export default App
