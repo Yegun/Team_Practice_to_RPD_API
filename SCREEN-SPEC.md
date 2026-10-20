@@ -2,7 +2,6 @@
 
 # SCREEN-SPEC: 식품 기한 정리 웹 앱
 
-<<<<<<< HEAD
 근거는 [PRD.md](PRD.md), [USER-WORKFLOW.md](USER-WORKFLOW.md), [DECISIONS.md](DECISIONS.md)다. 화면에 무엇이 있고(화면 요소), 화면이 어떤 상태가 되는지(화면 상태)를 적었다.
 
 - 문서에 없는 값은 정하지 않고 **[결정 필요]** 로 표시했다. 관련 질문 번호(Q-xx)와 USER-WORKFLOW 시나리오 번호(S-xx)를 함께 적었다.
