@@ -2,13 +2,16 @@ import { useEffect, useState } from 'react'
 import './App.css'
 import { listCards } from './api'
 import { CardList, type ListState } from './components/CardList'
+import { DraftReview } from './components/DraftReview'
 import { UploadForm } from './components/UploadForm'
 import { strings } from './strings'
+import type { Draft } from './types'
 
-type View = 'list' | 'upload'
+type View = 'list' | 'upload' | 'review'
 
 export default function App() {
   const [view, setView] = useState<View>('list')
+  const [drafts, setDrafts] = useState<Draft[]>([])
   const [list, setList] = useState<ListState>({ kind: 'loading' })
   const [attempt, setAttempt] = useState(0)
 
@@ -36,12 +39,14 @@ export default function App() {
       <h1>{strings.appTitle}</h1>
       {view === 'upload' ? (
         <UploadForm
-          onDone={() => {
-            // 정리 결과 확인 화면은 US-03 에서 붙인다.
-            setView('list')
+          onDone={(items) => {
+            setDrafts(items)
+            setView('review')
           }}
           onCancel={() => setView('list')}
         />
+      ) : view === 'review' ? (
+        <DraftReview drafts={drafts} onBack={() => setView('list')} />
       ) : (
         <>
           <div className="actions">

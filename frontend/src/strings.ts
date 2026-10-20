@@ -17,6 +17,8 @@ export const strings = {
   chooseFile: '사진 선택',
   analyze: '정리하기',
   analyzing: '사진을 정리하는 중...',
+  draftTitle: '정리 결과',
+  draftNotSaved: 'AI 가 정리한 초안입니다. 아직 저장되지 않았습니다.',
   // 사진 정리 실패 (T-08). 문구는 임시다.
   uploadErrors: {
     badType: 'jpeg, png, webp 사진만 올릴 수 있습니다. 다른 사진을 골라 주세요.',

@@ -50,6 +50,12 @@ def install_error_handlers(app: FastAPI) -> None:
             path = _field_path(tuple(err["loc"]))
             if path and path not in fields:
                 fields.append(path)
+        if "image" in fields:
+            # 사진 칸이 파일이 아닌 값으로 오면 파일이 잘못된 것과 같게 알린다 (A-02).
+            return JSONResponse(
+                status_code=400,
+                content=error_body("INVALID_IMAGE", "사진 파일이 올바르지 않다.", ["image"]),
+            )
         return JSONResponse(
             status_code=422,
             content=error_body("VALIDATION_ERROR", "입력값이 올바르지 않다.", fields),
