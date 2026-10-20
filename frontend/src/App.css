@@ -76,6 +76,21 @@
   border-color: #dccfb5;
 }
 
+/* 위험 식품 표시 방식은 Q-06 이 정해지지 않아 잠정이다: 점선 테두리 + 배지 */
+.card-risky {
+  border-style: dashed;
+  border-color: #c0392b;
+  border-left-style: solid;
+  background: #fffaf9;
+}
+
+.tag-risky {
+  background: #c0392b;
+  border-color: #c0392b;
+  color: #fff;
+  font-weight: 700;
+}
+
 .card-due {
   display: flex;
   align-items: center;

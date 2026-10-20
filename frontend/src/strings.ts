@@ -9,6 +9,7 @@ export const strings = {
   dueToday: '오늘',
   expired: '기한 지남',
   urgent: '임박',
+  risky: '주의 식품',
   storage: {
     fridge: '냉장',
     freezer: '냉동',
