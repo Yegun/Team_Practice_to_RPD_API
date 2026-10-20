@@ -1,5 +1,6 @@
 import { strings } from '../strings'
 import type { Card } from '../types'
+import { CardItem } from './CardItem'
 
 export type ListState =
   | { kind: 'loading' }
@@ -32,10 +33,7 @@ export function CardList({ state, onRetry }: Props) {
   return (
     <ul className="card-list">
       {state.items.map((card) => (
-        <li key={card.id} className="card">
-          <span className="card-name">{card.name}</span>
-          <span className="card-qty">× {card.quantity}</span>
-        </li>
+        <CardItem key={card.id} card={card} />
       ))}
     </ul>
   )

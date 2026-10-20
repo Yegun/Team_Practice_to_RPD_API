@@ -5,4 +5,8 @@ export const strings = {
   emptyList: '남은 식품이 없습니다.',
   loadFailed: '목록을 불러오지 못했습니다.',
   retry: '다시 시도',
+  noDueDate: '기한 없음',
+  dueToday: '오늘',
+  expired: '기한 지남',
+  urgent: '임박',
 } as const
