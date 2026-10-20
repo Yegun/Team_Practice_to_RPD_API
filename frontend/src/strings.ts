@@ -9,4 +9,9 @@ export const strings = {
   dueToday: '오늘',
   expired: '기한 지남',
   urgent: '임박',
+  storage: {
+    fridge: '냉장',
+    freezer: '냉동',
+    room: '실온',
+  },
 } as const

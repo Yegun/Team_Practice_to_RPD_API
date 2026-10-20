@@ -10,6 +10,9 @@ export function CardItem({ card }: { card: Card }) {
         <span className="card-name">{card.name}</span>
         <span className="card-qty">× {card.quantity}</span>
       </div>
+      <div className="card-tags">
+        <span className={`tag tag-${card.storage}`}>{strings.storage[card.storage]}</span>
+      </div>
       <div className="card-due">
         <span className={`badge badge-${card.urgency}`}>{daysLabel(card.days_left)}</span>
         {card.due_date && <span className="card-date">{card.due_date}</span>}
