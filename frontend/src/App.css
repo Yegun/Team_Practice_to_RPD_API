@@ -1,3 +1,250 @@
 .app {
-  padding: 24px 16px;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.app h1 {
+  font-size: 1.25rem;
+  margin: 0 0 16px;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin: 0 0 16px;
+}
+
+.actions .primary,
+button.primary {
+  background: #2457d6;
+  border-color: #2457d6;
+  color: #fff;
+}
+
+button:disabled {
+  opacity: 0.5;
+}
+
+.panel {
+  padding: 16px;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid #e1e4ea;
+}
+
+.panel h2 {
+  font-size: 1.0625rem;
+  margin: 0 0 8px;
+}
+
+.file-label {
+  display: block;
+}
+
+.file-label span {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.file-label input {
+  width: 100%;
+  font: inherit;
+}
+
+.file-name {
+  color: #5a6172;
+  word-break: break-all;
+}
+
+.notice {
+  padding: 16px;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid #e1e4ea;
+}
+
+.notice-error {
+  border-color: #e0a3a3;
+  background: #fdf1f1;
+}
+
+.card-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.card {
+  display: grid;
+  gap: 6px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid #e1e4ea;
+  border-left-width: 6px;
+}
+
+.card-main {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.card-name {
+  font-weight: 600;
+}
+
+.card-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  padding: 1px 8px;
+  border-radius: 6px;
+  font-size: 0.8125rem;
+  border: 1px solid #c4c9d4;
+  color: #3b4252;
+}
+
+.tag-fridge {
+  background: #e6f1fb;
+  border-color: #b5d3ee;
+}
+.tag-freezer {
+  background: #e9e6fb;
+  border-color: #c4bdee;
+}
+.tag-room {
+  background: #f4efe6;
+  border-color: #dccfb5;
+}
+
+/* 위험 식품 표시 방식은 Q-06 이 정해지지 않아 잠정이다: 점선 테두리 + 배지 */
+.card-risky {
+  border-style: dashed;
+  border-color: #c0392b;
+  border-left-style: solid;
+  background: #fffaf9;
+}
+
+.tag-risky {
+  background: #c0392b;
+  border-color: #c0392b;
+  color: #fff;
+  font-weight: 700;
+}
+
+.field {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.field > span:first-child {
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.field input[type='text'],
+.field input[type='number'],
+.field input[type='date'],
+.field select {
+  font: inherit;
+  min-height: 44px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid #c4c9d4;
+  width: 100%;
+}
+
+.field-invalid input,
+.field-invalid select {
+  border-color: #c0392b;
+  background: #fdf1f1;
+}
+
+.field-error {
+  color: #c0392b;
+  font-size: 0.8125rem;
+}
+
+.field-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.field-check input {
+  width: 22px;
+  height: 22px;
+}
+
+.card-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.card-actions button {
+  min-height: 36px;
+  padding: 0 12px;
+  font-size: 0.875rem;
+}
+
+.card-due {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 0.875rem;
+}
+
+.card-date {
+  color: #5a6172;
+}
+
+.card-flag {
+  color: #5a6172;
+}
+
+.badge {
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-weight: 700;
+  background: #e8ebf0;
+  color: #3b4252;
+}
+
+/* expired / urgent / ok / unknown (API 의 urgency 값) */
+.card-expired {
+  border-left-color: #c0392b;
+}
+.badge-expired {
+  background: #c0392b;
+  color: #fff;
+}
+
+.card-urgent {
+  border-left-color: #e08a00;
+}
+.badge-urgent {
+  background: #ffe2a8;
+  color: #6b4200;
+}
+
+.card-ok {
+  border-left-color: #2e8b57;
+}
+.badge-ok {
+  background: #d8f0e1;
+  color: #1d5b39;
+}
+
+.card-unknown {
+  border-left-color: #9aa1b0;
 }
