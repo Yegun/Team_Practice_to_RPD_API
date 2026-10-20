@@ -67,6 +67,15 @@ export function updateCard(id: string, patch: CardPatch): Promise<Card> {
   })
 }
 
+// 정리: 카드를 지우지 않고 상태만 '정리됨'으로 바꾼다. 목록에는 남은 카드만 나온다.
+export function archiveCard(id: string): Promise<Card> {
+  return request(`/api/cards/${encodeURIComponent(id)}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status: 'archived' }),
+  })
+}
+
 export function analyzeReceipt(image: File): Promise<{ items: Draft[] }> {
   const form = new FormData()
   form.append('image', image)

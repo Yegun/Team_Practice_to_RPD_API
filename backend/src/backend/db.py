@@ -107,3 +107,17 @@ def update_card(
     row = get_card(conn, owner, card_id)
     assert row is not None
     return row
+
+
+def set_status(
+    conn: sqlite3.Connection, owner: str, card_id: str, status: str
+) -> sqlite3.Row:
+    """카드를 지우지 않고 상태만 바꾼다 (D-007)."""
+    with conn:
+        conn.execute(
+            "UPDATE cards SET status = ?, updated_at = ? WHERE id = ? AND owner_id = ?",
+            (status, _now(), card_id, owner),
+        )
+    row = get_card(conn, owner, card_id)
+    assert row is not None
+    return row

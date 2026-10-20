@@ -24,6 +24,7 @@ export const strings = {
   saving: '저장하는 중...',
   cancel: '취소',
   edit: '수정',
+  archive: '정리',
   editTitle: '식품 수정',
   labelName: '이름',
   labelQuantity: '수량',

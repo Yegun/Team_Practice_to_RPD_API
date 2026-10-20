@@ -17,7 +17,6 @@ def patch(client, owner, card_id, body):
 
 
 def archive_directly(card_id):
-    # 정리 API(US-08) 전이라 DB 에 직접 넣어 둔다.
     conn = db.connect()
     conn.execute("UPDATE cards SET status = 'archived' WHERE id = ?", (card_id,))
     conn.commit()
@@ -117,9 +116,9 @@ def test_patch_empty_body_is_422(client, owner):
     assert r.json()["error"]["code"] == "VALIDATION_ERROR"
 
 
-@pytest.mark.parametrize("body", [{"status": "archived"}, {"name": "x", "status": "archived"},
+@pytest.mark.parametrize("body", [{"name": "x", "status": "archived"},
                                   {"urgent_days": 3}, {"id": "x"}])
-def test_patch_rejects_status_and_non_editable_fields(client, owner, body):
+def test_patch_rejects_mixed_status_and_non_editable_fields(client, owner, body):
     card = create(client, owner)
     r = patch(client, owner, card["id"], body)
     assert r.status_code == 422

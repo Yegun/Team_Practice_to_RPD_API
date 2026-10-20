@@ -42,7 +42,10 @@ class CardIn(BaseModel):
 
 
 class CardPatch(BaseModel):
-    """카드 수정 요청. 바꿀 필드만 담는다 (D-012). status 는 정리 API(US-08)가 쓴다."""
+    """카드 수정 요청. 바꿀 필드만 담는다 (D-012).
+
+    status 는 정리(archived)와 정리 취소(remaining)에 쓰고, 수정 필드와 함께 보내지 않는다.
+    """
 
     model_config = ConfigDict(extra="forbid")
 
@@ -53,6 +56,7 @@ class CardPatch(BaseModel):
     due_date: str | None = None
     storage: Storage = Field(default=None)
     is_risky: StrictBool = Field(default=None)
+    status: Literal["remaining", "archived"] = Field(default=None)
 
     _name = field_validator("name")(check_name)
     _due_date = field_validator("due_date")(check_due_date)

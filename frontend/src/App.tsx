@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import './App.css'
-import { listCards } from './api'
+import { ApiRequestError, archiveCard, listCards } from './api'
 import { CardEditForm } from './components/CardEditForm'
 import { CardList, type ListState } from './components/CardList'
 import { DraftReview } from './components/DraftReview'
@@ -17,6 +17,7 @@ export default function App() {
   const [notice, setNotice] = useState<string | null>(null)
   const [list, setList] = useState<ListState>({ kind: 'loading' })
   const [attempt, setAttempt] = useState(0)
+  const [archiving, setArchiving] = useState(false)
 
   useEffect(() => {
     let cancelled = false
@@ -35,6 +36,26 @@ export default function App() {
   const reload = () => {
     setList({ kind: 'loading' })
     setAttempt((n) => n + 1)
+  }
+
+  // 정리 (R-009). 성공하면 목록을 새로 읽어 카드가 사라진 것을 보여 준다.
+  // 찾을 수 없음 · 이미 정리됨(T-11)과 저장 실패(T-10)도 안내한 뒤 목록을 새로 읽어 실제 상태를 확인한다.
+  const archive = async (card: Card) => {
+    if (archiving) return
+    setArchiving(true)
+    setNotice(null)
+    let message: string | undefined
+    try {
+      await archiveCard(card.id)
+    } catch (err) {
+      message =
+        err instanceof ApiRequestError &&
+        (err.code === 'CARD_NOT_FOUND' || err.code === 'CARD_ARCHIVED')
+          ? strings.cardGone
+          : strings.saveFailed
+    }
+    setArchiving(false)
+    backToList(message)
   }
 
   // 저장이나 수정이 끝나면 목록으로 돌아가 새로 읽는다 (기한이 바뀌면 순서도 바뀐다).
@@ -84,7 +105,9 @@ export default function App() {
           )}
           <CardList
             state={list}
+            busy={archiving}
             onRetry={reload}
+            onArchive={archive}
             onEdit={(card) => {
               setNotice(null)
               setEditing(card)
