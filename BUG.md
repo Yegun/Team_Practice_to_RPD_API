@@ -10,6 +10,5 @@
 카드의 전과 동일함.
 
 ##증거
---캡쳐 : F5전, F5후
 --Netword : PATCH/api/tasks/번호 요청시 보낸 값{"status" : "Done"}
 					돌아온 값 {"status" : todo"}
