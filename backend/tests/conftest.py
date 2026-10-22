@@ -11,6 +11,7 @@ from backend.main import app
 @pytest.fixture
 def client(tmp_path, monkeypatch) -> Iterator[TestClient]:
     monkeypatch.setenv("FOODS_DB_PATH", str(tmp_path / "test.db"))
+    monkeypatch.setenv("SESSION_SECRET", "test-secret")
     with TestClient(app) as c:
         yield c
 

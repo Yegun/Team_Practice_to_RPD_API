@@ -1,3 +1,4 @@
+import re
 from datetime import date
 from typing import Literal
 
@@ -66,3 +67,31 @@ class CardsCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     items: list[CardIn] = Field(min_length=1)
+
+
+class SignupIn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    login_id: str
+    password: str = Field(min_length=8, max_length=128)
+
+    @field_validator("login_id")
+    @classmethod
+    def _login_id(cls, value: str) -> str:
+        # 소문자로 맞춰 저장한다. 이메일 형식은 강제하지 않는다.
+        v = value.strip().lower()
+        if not (3 <= len(v) <= 64) or not re.fullmatch(r"[a-z0-9@._-]+", v):
+            raise ValueError("아이디는 3~64자의 영문, 숫자, @ . _ - 만 쓸 수 있다.")
+        return v
+
+
+class LoginIn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    login_id: str = Field(min_length=1)
+    password: str = Field(min_length=1)
+
+    @field_validator("login_id")
+    @classmethod
+    def _login_id(cls, value: str) -> str:
+        return value.strip().lower()
