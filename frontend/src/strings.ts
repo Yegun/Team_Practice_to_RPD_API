@@ -2,7 +2,7 @@
 export const strings = {
   appTitle: '식품 기한 정리',
   loading: '불러오는 중...',
-  emptyList: '남은 식품이 없습니다.',
+  emptyList: '남은 식품이 없습니다. 영수증 사진을 올려 식품을 추가해 보세요.',
   loadFailed: '목록을 불러오지 못했습니다.',
   retry: '다시 시도',
   noDueDate: '기한 없음',
@@ -33,6 +33,11 @@ export const strings = {
   labelRisky: '주의 식품',
   clearDueDate: '기한 비우기',
   fieldInvalid: '값을 확인해 주세요.',
+  fieldErrors: {
+    name: '이름을 입력해 주세요.',
+    quantity: '수량은 숫자로 입력해 주세요.',
+    due_date: '기한은 날짜로 입력해 주세요. 예: 2026-10-25',
+  },
   invalidInputs: '입력값을 확인해 주세요.',
   saveFailed: '저장하지 못했습니다. 다시 시도해 주세요.',
   cardGone: '카드를 찾을 수 없거나 이미 정리된 카드입니다.',

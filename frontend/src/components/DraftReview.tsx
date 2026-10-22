@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { ApiRequestError, createCards } from '../api'
 import { strings } from '../strings'
 import type { Draft } from '../types'
@@ -34,15 +34,25 @@ export function DraftReview({ drafts, onBack, onSaved }: Props) {
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
   const [badFields, setBadFields] = useState<Set<string>>(new Set())
+  const dateInputs = useRef<(HTMLInputElement | null)[]>([])
 
   const setRow = (i: number, patch: Partial<Row>) =>
     setRows((prev) => prev.map((r, idx) => (idx === i ? { ...r, ...patch } : r)))
 
   const save = async () => {
     if (saving) return
-    setSaving(true)
     setMessage(null)
     setBadFields(new Set())
+    // 날짜 칸은 날짜가 아닌 입력이면 값이 빈 문자열이 된다. 빈 칸(기한 없음)과 구분해서 보내지 않는다.
+    const badDates = drafts.flatMap((_, i) =>
+      dateInputs.current[i]?.validity.badInput ? [`items[${i}].due_date`] : [],
+    )
+    if (badDates.length > 0) {
+      setBadFields(new Set(badDates))
+      setMessage(strings.invalidInputs)
+      return
+    }
+    setSaving(true)
     try {
       await createCards(drafts.map((d, i) => toBody(d, rows[i])))
       onSaved()
@@ -68,6 +78,7 @@ export function DraftReview({ drafts, onBack, onSaved }: Props) {
             <Field
               label={strings.labelName}
               invalid={badFields.has(`items[${i}].name`)}
+              message={strings.fieldErrors.name}
               input={
                 <input
                   type="text"
@@ -80,6 +91,7 @@ export function DraftReview({ drafts, onBack, onSaved }: Props) {
             <Field
               label={strings.labelQuantity}
               invalid={badFields.has(`items[${i}].quantity`)}
+              message={strings.fieldErrors.quantity}
               input={
                 <input
                   type="number"
@@ -94,8 +106,12 @@ export function DraftReview({ drafts, onBack, onSaved }: Props) {
             <Field
               label={strings.labelDueDate}
               invalid={badFields.has(`items[${i}].due_date`)}
+              message={strings.fieldErrors.due_date}
               input={
                 <input
+                  ref={(el) => {
+                    dateInputs.current[i] = el
+                  }}
                   type="date"
                   value={row.due_date}
                   disabled={saving}
@@ -129,17 +145,19 @@ export function DraftReview({ drafts, onBack, onSaved }: Props) {
 function Field({
   label,
   invalid,
+  message = strings.fieldInvalid,
   input,
 }: {
   label: string
   invalid: boolean
+  message?: string
   input: React.ReactNode
 }) {
   return (
     <label className={`field${invalid ? ' field-invalid' : ''}`}>
       <span>{label}</span>
       {input}
-      {invalid && <span className="field-error">{strings.fieldInvalid}</span>}
+      {invalid && <span className="field-error">{message}</span>}
     </label>
   )
 }
