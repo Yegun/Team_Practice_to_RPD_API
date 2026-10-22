@@ -1,6 +1,11 @@
 export type Storage = 'fridge' | 'freezer' | 'room'
 export type Urgency = 'expired' | 'urgent' | 'ok' | 'unknown'
 
+export type User = {
+  id: string
+  login_id: string
+}
+
 export type Draft = {
   name: string
   quantity: number
