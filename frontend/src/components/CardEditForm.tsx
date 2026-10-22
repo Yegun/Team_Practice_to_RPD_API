@@ -73,7 +73,7 @@ export function CardEditForm({ card, onCancel, onDone }: Props) {
       <label className={`field${bad('name') ? ' field-invalid' : ''}`}>
         <span>{strings.labelName}</span>
         <input type="text" value={name} disabled={saving} onChange={(e) => setName(e.target.value)} />
-        {bad('name') && <span className="field-error">{strings.fieldInvalid}</span>}
+        {bad('name') && <span className="field-error">{strings.fieldErrors.name}</span>}
       </label>
 
       <label className={`field${bad('quantity') ? ' field-invalid' : ''}`}>
