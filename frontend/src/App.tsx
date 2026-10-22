@@ -1,16 +1,31 @@
 import { useEffect, useState } from 'react'
 import './App.css'
-import { ApiRequestError, archiveCard, listCards } from './api'
+import {
+  ApiRequestError,
+  archiveCard,
+  listCards,
+  logout,
+  me,
+  setUnauthenticatedHandler,
+} from './api'
+import { AuthForm } from './components/AuthForm'
 import { CardEditForm } from './components/CardEditForm'
 import { CardList, type ListState } from './components/CardList'
 import { DraftReview } from './components/DraftReview'
 import { UploadForm } from './components/UploadForm'
 import { strings } from './strings'
-import type { Card, Draft } from './types'
+import type { Card, Draft, User } from './types'
 
 type View = 'list' | 'upload' | 'review' | 'edit'
 
+// 처음 열 때 /api/auth/me 로 로그인 여부를 확인한다 (S-01).
+type Auth =
+  | { kind: 'checking' }
+  | { kind: 'anon'; notice: string | null }
+  | { kind: 'user'; user: User }
+
 export default function App() {
+  const [auth, setAuth] = useState<Auth>({ kind: 'checking' })
   const [view, setView] = useState<View>('list')
   const [drafts, setDrafts] = useState<Draft[]>([])
   const [editing, setEditing] = useState<Card | null>(null)
@@ -19,7 +34,37 @@ export default function App() {
   const [attempt, setAttempt] = useState(0)
   const [archiving, setArchiving] = useState(false)
 
+  // 로그인 화면으로 돌아갈 때 화면이 들고 있던 값은 버린다.
+  const resetToAnon = (notice: string | null) => {
+    setView('list')
+    setDrafts([])
+    setEditing(null)
+    setNotice(null)
+    setList({ kind: 'loading' })
+    setAuth({ kind: 'anon', notice })
+  }
+
   useEffect(() => {
+    let cancelled = false
+    me()
+      .then(({ user }) => {
+        if (!cancelled) setAuth({ kind: 'user', user })
+      })
+      .catch(() => {
+        if (!cancelled) setAuth({ kind: 'anon', notice: null })
+      })
+    // 어느 API 든 401 이면 로그인 화면으로 보낸다.
+    setUnauthenticatedHandler(() => resetToAnon(strings.sessionEnded))
+    return () => {
+      cancelled = true
+      setUnauthenticatedHandler(null)
+    }
+  }, [])
+
+  const signedIn = auth.kind === 'user'
+
+  useEffect(() => {
+    if (!signedIn) return
     let cancelled = false
     listCards()
       .then(({ items }) => {
@@ -31,7 +76,7 @@ export default function App() {
     return () => {
       cancelled = true
     }
-  }, [attempt])
+  }, [attempt, signedIn])
 
   const reload = () => {
     setList({ kind: 'loading' })
@@ -65,9 +110,53 @@ export default function App() {
     reload()
   }
 
+  const signOut = async () => {
+    try {
+      await logout()
+    } catch (err) {
+      if (!(err instanceof ApiRequestError && err.status === 401)) {
+        setNotice(strings.authErrors.other)
+        return
+      }
+    }
+    resetToAnon(null)
+  }
+
+  if (auth.kind === 'checking') {
+    return (
+      <main className="app">
+        <h1>{strings.appTitle}</h1>
+        <p role="status">{strings.loading}</p>
+      </main>
+    )
+  }
+
+  if (auth.kind === 'anon') {
+    return (
+      <main className="app">
+        <h1>{strings.appTitle}</h1>
+        <AuthForm
+          notice={auth.notice}
+          onDone={(user) => {
+            setList({ kind: 'loading' })
+            setAuth({ kind: 'user', user })
+          }}
+        />
+      </main>
+    )
+  }
+
   return (
     <main className="app">
       <h1>{strings.appTitle}</h1>
+      <div className="actions user-bar">
+        <span className="user-name">
+          {strings.userLabel} {auth.user.login_id}
+        </span>
+        <button type="button" onClick={signOut}>
+          {strings.logoutButton}
+        </button>
+      </div>
       {view === 'upload' ? (
         <UploadForm
           onDone={(items) => {

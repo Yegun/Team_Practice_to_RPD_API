@@ -248,3 +248,14 @@ button:disabled {
 .card-unknown {
   border-left-color: #9aa1b0;
 }
+
+.user-bar {
+  align-items: center;
+  justify-content: space-between;
+}
+
+.user-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
