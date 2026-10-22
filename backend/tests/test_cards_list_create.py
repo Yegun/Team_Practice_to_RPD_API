@@ -8,16 +8,16 @@ def post(client, owner, *items):
     return client.post("/api/cards", json={"items": list(items)}, headers=owner)
 
 
-def test_list_requires_owner_header(client):
+def test_list_requires_login(client):
     r = client.get("/api/cards")
-    assert r.status_code == 400
-    assert r.json()["error"]["code"] == "OWNER_MISSING"
+    assert r.status_code == 401
+    assert r.json()["error"]["code"] == "UNAUTHENTICATED"
 
 
-def test_list_rejects_non_uuid_owner(client):
-    r = client.get("/api/cards", headers={"X-Owner-Id": "not-a-uuid"})
-    assert r.status_code == 400
-    assert r.json()["error"]["code"] == "OWNER_MISSING"
+def test_list_rejects_garbage_session(client):
+    r = client.get("/api/cards", headers={"Cookie": "session=garbage"})
+    assert r.status_code == 401
+    assert r.json()["error"]["code"] == "UNAUTHENTICATED"
 
 
 def test_empty_list_is_not_an_error(client, owner):
@@ -44,9 +44,9 @@ def test_created_cards_persist_and_are_listed(client, owner):
     assert [c["name"] for c in items] == ["사과"]
 
 
-def test_other_owner_cannot_see_cards(client, owner):
+def test_other_owner_cannot_see_cards(client, owner, new_user):
     post(client, owner, make_item())
-    other = {"X-Owner-Id": str(uuid.uuid4())}
+    other = new_user("bob")
     assert client.get("/api/cards", headers=other).json() == {"items": []}
 
 
@@ -112,10 +112,10 @@ def test_create_allows_past_due_date_and_duplicate_names(client, owner):
     assert r.json()["items"][0]["urgency"] == "expired"
 
 
-def test_create_requires_owner_header(client):
+def test_create_requires_login(client):
     r = client.post("/api/cards", json={"items": [make_item()]})
-    assert r.status_code == 400
-    assert r.json()["error"]["code"] == "OWNER_MISSING"
+    assert r.status_code == 401
+    assert r.json()["error"]["code"] == "UNAUTHENTICATED"
 
 
 def test_storage_failure_returns_500(client, owner, monkeypatch):

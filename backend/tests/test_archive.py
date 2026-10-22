@@ -89,9 +89,9 @@ def test_archive_unknown_card_is_404(client, owner):
     assert r.json()["error"]["code"] == "CARD_NOT_FOUND"
 
 
-def test_cannot_archive_or_unarchive_other_owners_card(client, owner):
+def test_cannot_archive_or_unarchive_other_owners_card(client, owner, new_user):
     card = create(client, owner, name="내것")
-    other = {"X-Owner-Id": str(uuid.uuid4())}
+    other = new_user("bob")
     r = set_status(client, other, card["id"], "archived")
     assert r.status_code == 404
     assert r.json()["error"]["code"] == "CARD_NOT_FOUND"
@@ -140,9 +140,9 @@ def test_status_change_updates_updated_at(client, owner):
     assert db_row(card["id"])["updated_at"] > before
 
 
-def test_status_change_requires_owner_header(client, owner):
+def test_status_change_requires_login(client, owner):
     card = create(client, owner)
     r = client.patch(f"/api/cards/{card['id']}", json={"status": "archived"})
-    assert r.status_code == 400
-    assert r.json()["error"]["code"] == "OWNER_MISSING"
+    assert r.status_code == 401
+    assert r.json()["error"]["code"] == "UNAUTHENTICATED"
     assert names(client, owner) == ["우유"]

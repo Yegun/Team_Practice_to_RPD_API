@@ -131,9 +131,9 @@ def test_patch_unknown_card_is_404(client, owner):
     assert r.json()["error"]["code"] == "CARD_NOT_FOUND"
 
 
-def test_patch_other_owners_card_is_404_and_unchanged(client, owner):
+def test_patch_other_owners_card_is_404_and_unchanged(client, owner, new_user):
     card = create(client, owner, name="내것")
-    other = {"X-Owner-Id": str(uuid.uuid4())}
+    other = new_user("bob")
     r = patch(client, other, card["id"], {"name": "빼앗김"})
     assert r.status_code == 404
     assert r.json()["error"]["code"] == "CARD_NOT_FOUND"
@@ -148,11 +148,11 @@ def test_patch_archived_card_is_409(client, owner):
     assert r.json()["error"]["code"] == "CARD_ARCHIVED"
 
 
-def test_patch_requires_owner_header(client, owner):
+def test_patch_requires_login(client, owner):
     card = create(client, owner)
     r = client.patch(f"/api/cards/{card['id']}", json={"name": "x"})
-    assert r.status_code == 400
-    assert r.json()["error"]["code"] == "OWNER_MISSING"
+    assert r.status_code == 401
+    assert r.json()["error"]["code"] == "UNAUTHENTICATED"
 
 
 def test_patch_updates_updated_at_but_response_hides_it(client, owner):

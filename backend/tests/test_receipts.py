@@ -78,9 +78,9 @@ def test_exactly_10mb_is_allowed(client, owner):
     assert upload(client, owner, data).status_code == 200
 
 
-def test_owner_header_required(client):
+def test_login_required(client):
     r = client.post(URL, files={"image": ("a.jpg", JPEG, "image/jpeg")})
-    assert_error(r, 400, "OWNER_MISSING")
+    assert_error(r, 401, "UNAUTHENTICATED")
 
 
 def test_no_food_found_is_422(client, owner, monkeypatch):
