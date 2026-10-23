@@ -86,6 +86,76 @@ def test_mismatch_restores_backup(old_db, monkeypatch, tmp_path):
     assert list(tmp_path.glob("foods.db.broken-*"))
 
 
+def _upgrade_to(path: Path, revision: str) -> None:
+    import os
+
+    from alembic import command
+    from alembic.config import Config
+
+    os.environ["FOODS_DB_PATH"] = str(path)
+    command.upgrade(Config(str(mwb.BACKEND / "alembic.ini")), revision)
+
+
+def _q(path: Path, sql: str):
+    conn = sqlite3.connect(path)
+    try:
+        return conn.execute(sql).fetchall()
+    finally:
+        conn.close()
+
+
+def test_four_steps_each_check(old_db, monkeypatch):
+    monkeypatch.setenv("FOODS_DB_PATH", str(old_db))
+    before = mwb.snapshot(old_db)
+    cols = mwb.other_columns(old_db)
+
+    _upgrade_to(old_db, "0001")  # 구조 추가: 카드 수·내용 그대로, 사용자 없음
+    assert _q(old_db, "SELECT COUNT(*) FROM users") == [(0,)]
+    assert mwb.snapshot(old_db) == before
+
+    _upgrade_to(old_db, "0002")  # 이전용 계정: 사용자 한 명, 카드는 아직 그대로
+    assert _q(old_db, "SELECT login_id, password_hash FROM users") == [("migrated@test.com", "")]
+    assert mwb.snapshot(old_db) == before
+
+    _upgrade_to(old_db, "0003")  # 주인 채우기: 주인 없는 카드 0
+    assert _q(
+        old_db, "SELECT COUNT(*) FROM cards WHERE owner_id NOT IN (SELECT id FROM users)"
+    ) == [(0,)]
+    assert mwb.snapshot(old_db)["total"] == before["total"]
+
+    _upgrade_to(old_db, "0004")  # 필수로: 수·내용 그대로
+    after = mwb.snapshot(old_db)
+    assert after["total"] == before["total"] and after["ids"] == before["ids"]
+    assert mwb.other_columns(old_db) == cols
+    notnull = [r for r in _q(old_db, "PRAGMA table_info(cards)") if r[1] == "owner_id"]
+    assert notnull[0][3] == 1
+
+
+def test_step_4_stops_on_card_without_owner(old_db, monkeypatch):
+    monkeypatch.setenv("FOODS_DB_PATH", str(old_db))
+    _upgrade_to(old_db, "0003")
+    conn = sqlite3.connect(old_db)
+    conn.execute(
+        "INSERT INTO cards VALUES ('orphan', 'nobody', 'x', 1, NULL, 'room', 0, 3, "
+        "'remaining', 't', 't')"
+    )
+    conn.commit()
+    conn.close()
+    with pytest.raises(RuntimeError, match="0004"):
+        _upgrade_to(old_db, "0004")
+
+
+def test_step_2_stops_if_two_users_exist(old_db, monkeypatch):
+    monkeypatch.setenv("FOODS_DB_PATH", str(old_db))
+    _upgrade_to(old_db, "0001")
+    conn = sqlite3.connect(old_db)
+    conn.execute("INSERT INTO users VALUES ('u1', 'someone', 'h', 't')")
+    conn.commit()
+    conn.close()
+    with pytest.raises(RuntimeError, match="0002"):
+        _upgrade_to(old_db, "0002")
+
+
 def test_upgrade_is_safe_on_db_created_by_app(tmp_path, monkeypatch):
     # 앱이 이미 users, sessions 를 만든 DB 에서도 적용된다.
     from backend.db import connect
